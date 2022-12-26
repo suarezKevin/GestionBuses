@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 60),
+            padding: EdgeInsets.only(top: 30),
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
                 HexColor("#000080"),
@@ -28,12 +28,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
             child: Image.asset(
               "assets/images/imglogin.jpeg",
-              height: 200,
-              width: 200,
+              width: double.infinity,
+              height: 350,
+              fit: BoxFit.fill,
             ),
           ),
           Transform.translate(
-            offset: Offset(0, 30),
+            offset: Offset(0, 50),
             child: Center(
               child: SingleChildScrollView(
                 child: Card(
@@ -56,19 +57,20 @@ class _LoginPageState extends State<LoginPage> {
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: "Usuario:",
+                            hintText: "nombre de usuario",
                           ),
+                          cursorHeight: 30,
                         ),
                         SizedBox(
-                          height: 40,
+                          height: 30,
                         ),
                         TextFormField(
                           decoration: InputDecoration(
-                            labelText: "Contraseña:",
-                          ),
+                              labelText: "Contraseña:", hintText: "contraseña"),
                           obscureText: true,
                         ),
                         SizedBox(
-                          height: 35,
+                          height: 30,
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -91,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 30,
+                          height: 25,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -101,9 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  Navigator.of(context).pushNamed(
-                                    '/register',
-                                  );
+                                  _showRegister(context);
                                 },
                                 child: Text("Registrarse"))
                           ],
@@ -126,5 +126,11 @@ class _LoginPageState extends State<LoginPage> {
         _loading = true;
       });
     }
+  }
+
+  void _showRegister(BuildContext context) {
+    Navigator.of(context).pushNamed(
+      '/register',
+    );
   }
 }
