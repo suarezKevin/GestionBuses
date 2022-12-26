@@ -11,6 +11,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _loading = false;
+  bool _enableVisiblePassword = true;
+
+  FocusNode? usernameFocus;
+  FocusNode? passwordFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -57,17 +61,34 @@ class _LoginPageState extends State<LoginPage> {
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: "Usuario:",
-                            hintText: "nombre de usuario",
+                            hintText: "Mi nombre de usuario",
                           ),
-                          cursorHeight: 30,
+                          maxLength: 30,
+                          focusNode: usernameFocus,
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(passwordFocus),
+                          textInputAction: TextInputAction.next,
                         ),
                         SizedBox(
-                          height: 30,
+                          height: 20,
                         ),
                         TextFormField(
                           decoration: InputDecoration(
-                              labelText: "Contraseña:", hintText: "contraseña"),
-                          obscureText: true,
+                            labelText: "Contraseña:",
+                            hintText: "Mi contraseña",
+                            suffixIcon: Padding(
+                              padding: EdgeInsets.only(top: 20),
+                              child: GestureDetector(
+                                onTap: showPassword,
+                                child: Icon(_enableVisiblePassword
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility),
+                              ),
+                            ),
+                          ),
+                          obscureText: _enableVisiblePassword,
+                          maxLength: 25,
+                          focusNode: passwordFocus,
                         ),
                         SizedBox(
                           height: 30,
@@ -132,5 +153,27 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.of(context).pushNamed(
       '/register',
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    usernameFocus = FocusNode();
+    passwordFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    usernameFocus?.dispose();
+    passwordFocus?.dispose();
+  }
+
+  void showPassword() {
+    setState(() {
+      _enableVisiblePassword = !_enableVisiblePassword;
+    });
   }
 }
