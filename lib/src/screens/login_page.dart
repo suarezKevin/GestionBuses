@@ -57,15 +57,16 @@ class _LoginPageState extends State<LoginPage> {
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: "Usuario:",
+                            hintText: "nombre de usuario",
                           ),
+                          cursorHeight: 30,
                         ),
                         SizedBox(
                           height: 30,
                         ),
                         TextFormField(
                           decoration: InputDecoration(
-                            labelText: "Contraseña:",
-                          ),
+                              labelText: "Contraseña:", hintText: "contraseña"),
                           obscureText: true,
                         ),
                         SizedBox(
