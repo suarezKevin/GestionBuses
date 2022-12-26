@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:flutter/services.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -13,6 +14,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool _enableVisiblePassword = true;
   bool _enableConfirmPassword = true;
+
+  FocusNode? ciFocus;
+  FocusNode? nameFocus;
+  FocusNode? phoneFocus;
+  FocusNode? cityFocus;
+  FocusNode? userNameFocus;
+  FocusNode? passwordFocus;
+  FocusNode? confirmPasswordFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +50,22 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          Text("Registrarse",
+                              style: TextStyle(
+                                fontSize: 35,
+                                color: HexColor("#000080"),
+                                fontWeight: FontWeight.bold,
+                              )),
                           TextFormField(
                             decoration: InputDecoration(
                               labelText: "Cédula:",
                             ),
                             maxLength: 10,
                             keyboardType: TextInputType.number,
+                            focusNode: ciFocus,
+                            onEditingComplete: () =>
+                                requestFocus(context, nameFocus!),
+                            textInputAction: TextInputAction.next,
                           ),
                           SizedBox(
                             height: 20,
@@ -56,6 +75,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               labelText: "Nombre:",
                             ),
                             maxLength: 40,
+                            focusNode: nameFocus,
+                            onEditingComplete: () =>
+                                requestFocus(context, phoneFocus!),
+                            textInputAction: TextInputAction.next,
                           ),
                           SizedBox(
                             height: 20,
@@ -66,6 +89,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             maxLength: 10,
                             keyboardType: TextInputType.phone,
+                            focusNode: phoneFocus,
+                            onEditingComplete: () =>
+                                requestFocus(context, cityFocus!),
+                            textInputAction: TextInputAction.next,
                           ),
                           SizedBox(
                             height: 20,
@@ -75,6 +102,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               labelText: "Ciudad:",
                             ),
                             maxLength: 30,
+                            focusNode: cityFocus,
+                            onEditingComplete: () =>
+                                requestFocus(context, userNameFocus!),
+                            textInputAction: TextInputAction.next,
                           ),
                           SizedBox(
                             height: 20,
@@ -84,6 +115,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               labelText: "Nombre de Usuario:",
                             ),
                             maxLength: 30,
+                            focusNode: userNameFocus,
+                            onEditingComplete: () =>
+                                requestFocus(context, passwordFocus!),
+                            textInputAction: TextInputAction.next,
                           ),
                           SizedBox(
                             height: 20,
@@ -102,6 +137,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 )),
                             maxLength: 25,
                             obscureText: _enableVisiblePassword,
+                            focusNode: passwordFocus,
+                            onEditingComplete: () =>
+                                requestFocus(context, confirmPasswordFocus!),
+                            textInputAction: TextInputAction.next,
                           ),
                           SizedBox(
                             height: 20,
@@ -121,6 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             obscureText: _enableConfirmPassword,
                             maxLength: 25,
+                            focusNode: confirmPasswordFocus,
                           ),
                           SizedBox(
                             height: 20,
@@ -198,5 +238,35 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       _enableVisiblePassword = !_enableVisiblePassword;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ciFocus = FocusNode();
+    nameFocus = FocusNode();
+    phoneFocus = FocusNode();
+    cityFocus = FocusNode();
+    userNameFocus = FocusNode();
+    passwordFocus = FocusNode();
+    confirmPasswordFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    ciFocus?.dispose();
+    nameFocus?.dispose();
+    phoneFocus?.dispose();
+    cityFocus?.dispose();
+    userNameFocus?.dispose();
+    passwordFocus?.dispose();
+    confirmPasswordFocus?.dispose();
+  }
+
+  void requestFocus(BuildContext context, FocusNode focusNode) {
+    FocusScope.of(context).requestFocus(focusNode);
   }
 }
