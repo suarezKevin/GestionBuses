@@ -11,6 +11,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _loading = false;
+  bool _enableVisiblePassword = true;
+
+  FocusNode? usernameFocus;
+  FocusNode? passwordFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 60),
+            padding: EdgeInsets.only(top: 30),
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
                 HexColor("#000080"),
@@ -28,12 +32,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
             child: Image.asset(
               "assets/images/imglogin.jpeg",
-              height: 200,
-              width: 200,
+              width: double.infinity,
+              height: 350,
+              fit: BoxFit.fill,
             ),
           ),
           Transform.translate(
-            offset: Offset(0, 30),
+            offset: Offset(0, 50),
             child: Center(
               child: SingleChildScrollView(
                 child: Card(
@@ -55,20 +60,45 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         TextFormField(
                           decoration: InputDecoration(
-                            labelText: "Usuario:",
+                            labelText: "Email:",
+                            hintText: "usuario@gmail.com",
+                            hintStyle: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                            ),
                           ),
+                          maxLength: 30,
+                          focusNode: usernameFocus,
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(passwordFocus),
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
                         ),
                         SizedBox(
-                          height: 40,
+                          height: 20,
                         ),
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: "Contraseña:",
+                            hintText: "Mi contraseña",
+                            hintStyle: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                            suffixIcon: Padding(
+                              padding: EdgeInsets.only(top: 20),
+                              child: GestureDetector(
+                                onTap: showPassword,
+                                child: Icon(_enableVisiblePassword
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility),
+                              ),
+                            ),
                           ),
-                          obscureText: true,
+                          obscureText: _enableVisiblePassword,
+                          maxLength: 25,
+                          focusNode: passwordFocus,
                         ),
                         SizedBox(
-                          height: 35,
+                          height: 30,
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -91,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 30,
+                          height: 25,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -101,9 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  Navigator.of(context).pushNamed(
-                                    '/register',
-                                  );
+                                  _showRegister(context);
                                 },
                                 child: Text("Registrarse"))
                           ],
@@ -126,5 +154,33 @@ class _LoginPageState extends State<LoginPage> {
         _loading = true;
       });
     }
+  }
+
+  void _showRegister(BuildContext context) {
+    Navigator.of(context).pushNamed(
+      '/register',
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    usernameFocus = FocusNode();
+    passwordFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    usernameFocus?.dispose();
+    passwordFocus?.dispose();
+  }
+
+  void showPassword() {
+    setState(() {
+      _enableVisiblePassword = !_enableVisiblePassword;
+    });
   }
 }
