@@ -73,6 +73,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           TextFormField(
                             decoration: InputDecoration(
                               labelText: "Nombre:",
+                              hintText: "Alex Igancio Tigselema Pacheco",
+                              hintStyle: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                              ),
                             ),
                             maxLength: 40,
                             focusNode: nameFocus,
@@ -86,6 +90,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           TextFormField(
                             decoration: InputDecoration(
                               labelText: "Teléfono:",
+                              hintText: "000 000 0000",
+                              hintStyle: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                              ),
                             ),
                             maxLength: 10,
                             keyboardType: TextInputType.phone,
@@ -100,6 +108,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           TextFormField(
                             decoration: InputDecoration(
                               labelText: "Ciudad:",
+                              hintText: "Por Ejemplo: Ambato",
+                              hintStyle: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                              ),
                             ),
                             maxLength: 30,
                             focusNode: cityFocus,
@@ -112,13 +124,18 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           TextFormField(
                             decoration: InputDecoration(
-                              labelText: "Nombre de Usuario:",
+                              labelText: "Email:",
+                              hintText: "usuario@gmail.com",
+                              hintStyle: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                              ),
                             ),
                             maxLength: 30,
                             focusNode: userNameFocus,
                             onEditingComplete: () =>
                                 requestFocus(context, passwordFocus!),
                             textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
                           ),
                           SizedBox(
                             height: 20,

@@ -60,14 +60,18 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         TextFormField(
                           decoration: InputDecoration(
-                            labelText: "Usuario:",
-                            hintText: "Mi nombre de usuario",
+                            labelText: "Email:",
+                            hintText: "usuario@gmail.com",
+                            hintStyle: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                            ),
                           ),
                           maxLength: 30,
                           focusNode: usernameFocus,
                           onEditingComplete: () => FocusScope.of(context)
                               .requestFocus(passwordFocus),
                           textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
                         ),
                         SizedBox(
                           height: 20,
@@ -76,6 +80,9 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: InputDecoration(
                             labelText: "Contraseña:",
                             hintText: "Mi contraseña",
+                            hintStyle: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                            ),
                             suffixIcon: Padding(
                               padding: EdgeInsets.only(top: 20),
                               child: GestureDetector(
