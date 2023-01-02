@@ -97,6 +97,10 @@ class _LoginPageState extends State<LoginPage> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return "Campo Obligatorio";
+                              } else if (!RegExp(
+                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(value)) {
+                                return "Formato de email no válido!";
                               }
                             },
                           ),
@@ -130,6 +134,9 @@ class _LoginPageState extends State<LoginPage> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return "Campo Obligatorio";
+                              } else if (value.length <= 5 ||
+                                  value.length >= 13) {
+                                return "La contraseña debe tener entre 6 y 12 caracteres!";
                               }
                             },
                           ),
@@ -203,9 +210,11 @@ class _LoginPageState extends State<LoginPage> {
 
   void _showHomePage(BuildContext context) async {
     if (await _logInUser(context)) {
+      print("hola 1");
       Navigator.of(context).pushNamed(
         '/home_page',
       );
+      print("hola 2");
     }
   }
 
@@ -236,18 +245,26 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Future<bool> _logInUser(BuildContext context) async {
+  Future _logInUser(BuildContext context) async {
     if (formKey.currentState!.validate()) {
+      print("Que tal");
       formKey.currentState?.save();
       var _data = await UserServices().postLogin(emailValue!, passwordValue!);
+      print(passwordValue);
+      print(emailValue);
 
-      _prefs?.setString("key_token", _data["token"].toString());
-      _prefs?.setString("key_email", _data["username"].toString());
-      _prefs?.setBool("isLoggedIn", true);
+      if (_data["status"].toString() == "401") {
+        print(_data["message"]);
+        return false;
+      } else {
+        _prefs?.setString("key_token", _data["token"].toString());
+        _prefs?.setString("key_email", _data["username"].toString());
+        return true;
+      }
 
-      print(_data["token"]);
-      print(_data["username"]);
-      return true;
+      //print(_data["token"]);
+      //print(_data["username"]);
+
     }
     return false;
   }

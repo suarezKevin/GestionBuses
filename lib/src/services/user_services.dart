@@ -20,6 +20,9 @@ class UserServices {
         var data = jsonDecode(response.body);
         //print(data["data"]["token"]);
         return data["data"];
+      } else {
+        var data = jsonDecode(response.body);
+        return data;
       }
     } catch (e) {
       print(e.toString());
