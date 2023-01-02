@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobil_app_bus/src/services/user_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +17,20 @@ class _LoginPageState extends State<LoginPage> {
 
   FocusNode? usernameFocus;
   FocusNode? passwordFocus;
+
+  String? emailValue;
+  String? passwordValue;
+
+  final formKey = GlobalKey<FormState>();
+
+  TextEditingController? emailController;
+  TextEditingController? passwordController;
+
+  SharedPreferences? _prefs;
+
+  _loadPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,91 +68,120 @@ class _LoginPageState extends State<LoginPage> {
                     top: 150,
                     bottom: 20,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 35, vertical: 20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: "Email:",
-                            hintText: "usuario@gmail.com",
-                            hintStyle: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                            ),
-                          ),
-                          maxLength: 30,
-                          focusNode: usernameFocus,
-                          onEditingComplete: () => FocusScope.of(context)
-                              .requestFocus(passwordFocus),
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: "Contraseña:",
-                            hintText: "Mi contraseña",
-                            hintStyle: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                            ),
-                            suffixIcon: Padding(
-                              padding: EdgeInsets.only(top: 20),
-                              child: GestureDetector(
-                                onTap: showPassword,
-                                child: Icon(_enableVisiblePassword
-                                    ? Icons.visibility_off_rounded
-                                    : Icons.visibility),
+                  child: Form(
+                    key: formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 35, vertical: 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextFormField(
+                            controller: emailController,
+                            decoration: InputDecoration(
+                              labelText: "Email:",
+                              hintText: "usuario@gmail.com",
+                              hintStyle: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
                               ),
                             ),
+                            maxLength: 30,
+                            focusNode: usernameFocus,
+                            onEditingComplete: () => FocusScope.of(context)
+                                .requestFocus(passwordFocus),
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
+                            onSaved: (newValue) {
+                              emailValue = newValue;
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Campo Obligatorio";
+                              } else if (!RegExp(
+                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(value)) {
+                                return "Formato de email no válido!";
+                              }
+                            },
                           ),
-                          obscureText: _enableVisiblePassword,
-                          maxLength: 25,
-                          focusNode: passwordFocus,
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _login(context);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                              labelText: "Contraseña:",
+                              hintText: "Mi contraseña",
+                              hintStyle: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                              ),
+                              suffixIcon: Padding(
+                                padding: EdgeInsets.only(top: 20),
+                                child: GestureDetector(
+                                  onTap: showPassword,
+                                  child: Icon(_enableVisiblePassword
+                                      ? Icons.visibility_off_rounded
+                                      : Icons.visibility),
+                                ),
+                              ),
+                            ),
+                            obscureText: _enableVisiblePassword,
+                            maxLength: 25,
+                            focusNode: passwordFocus,
+                            onSaved: (newValue) {
+                              passwordValue = newValue;
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Campo Obligatorio";
+                              } else if (value.length <= 5 ||
+                                  value.length >= 13) {
+                                return "La contraseña debe tener entre 6 y 12 caracteres!";
+                              }
+                            },
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              _showHomePage(
+                                  context); // llevar al usuario a la pagina principal
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Iniciar Sesión"),
+                                // if (_loading)
+                                //   Container(
+                                //     height: 20,
+                                //     width: 20,
+                                //     margin: const EdgeInsets.only(left: 20),
+                                //     child: CircularProgressIndicator(
+                                //       color: Colors.white,
+                                //     ),
+                                //   )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 25,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text("Iniciar Sesión"),
-                              if (_loading)
-                                Container(
-                                  height: 20,
-                                  width: 20,
-                                  margin: const EdgeInsets.only(left: 20),
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                )
+                              Text(
+                                "¿No estás registrado?",
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    _showRegister(context);
+                                  },
+                                  child: Text("Registrarse"))
                             ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              "¿No estás registrado?",
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  _showRegister(context);
-                                },
-                                child: Text("Registrarse"))
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -162,12 +207,34 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _showHomePage(BuildContext context) async {
+    if (await _logInUser(context)) {
+      _login(context);
+      Navigator.of(context).pushNamed(
+        '/home_page',
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "¡Email o contraseña incorrecta!",
+            textAlign: TextAlign.center,
+          ),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     usernameFocus = FocusNode();
     passwordFocus = FocusNode();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    _loadPreferences();
   }
 
   @override
@@ -176,11 +243,33 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
     usernameFocus?.dispose();
     passwordFocus?.dispose();
+    emailController?.dispose();
+    passwordController?.dispose();
   }
 
   void showPassword() {
     setState(() {
       _enableVisiblePassword = !_enableVisiblePassword;
     });
+  }
+
+  Future _logInUser(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      print("Que tal");
+      formKey.currentState?.save();
+      var _data = await UserServices().postLogin(emailValue!, passwordValue!);
+      print(passwordValue);
+      print(emailValue);
+
+      if (_data["status"].toString() == "401") {
+        print(_data["message"]);
+        return false;
+      } else {
+        _prefs?.setString("key_token", _data["token"].toString());
+        _prefs?.setString("key_email", _data["username"].toString());
+        return true;
+      }
+    }
+    return false;
   }
 }
