@@ -145,7 +145,6 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              _login(context); // icono de loading
                               _showHomePage(
                                   context); // llevar al usuario a la pagina principal
                             },
@@ -153,15 +152,15 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text("Iniciar Sesión"),
-                                if (_loading)
-                                  Container(
-                                    height: 20,
-                                    width: 20,
-                                    margin: const EdgeInsets.only(left: 20),
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                  )
+                                // if (_loading)
+                                //   Container(
+                                //     height: 20,
+                                //     width: 20,
+                                //     margin: const EdgeInsets.only(left: 20),
+                                //     child: CircularProgressIndicator(
+                                //       color: Colors.white,
+                                //     ),
+                                //   )
                               ],
                             ),
                           ),
@@ -210,11 +209,20 @@ class _LoginPageState extends State<LoginPage> {
 
   void _showHomePage(BuildContext context) async {
     if (await _logInUser(context)) {
-      print("hola 1");
+      _login(context);
       Navigator.of(context).pushNamed(
         '/home_page',
       );
-      print("hola 2");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "¡Email o contraseña incorrecta!",
+            textAlign: TextAlign.center,
+          ),
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
 
@@ -261,10 +269,6 @@ class _LoginPageState extends State<LoginPage> {
         _prefs?.setString("key_email", _data["username"].toString());
         return true;
       }
-
-      //print(_data["token"]);
-      //print(_data["username"]);
-
     }
     return false;
   }
