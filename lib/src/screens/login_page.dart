@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobil_app_bus/src/services/user_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,6 +25,12 @@ class _LoginPageState extends State<LoginPage> {
 
   TextEditingController? emailController;
   TextEditingController? passwordController;
+
+  SharedPreferences? _prefs;
+
+  _loadPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,8 +138,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              _login(context);
-                              _logInUser(context);
+                              _login(context); // icono de loading
+                              _showHomePage(
+                                  context); // llevar al usuario a la pagina principal
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -193,6 +201,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _showHomePage(BuildContext context) async {
+    if (await _logInUser(context)) {
+      Navigator.of(context).pushNamed(
+        '/home_page',
+      );
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -201,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
     passwordFocus = FocusNode();
     emailController = TextEditingController();
     passwordController = TextEditingController();
-    print("Hola");
+    _loadPreferences();
   }
 
   @override
@@ -220,12 +236,19 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void _logInUser(BuildContext context) async {
+  Future<bool> _logInUser(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState?.save();
       var _data = await UserServices().postLogin(emailValue!, passwordValue!);
 
-      print(_data);
+      _prefs?.setString("key_token", _data["token"].toString());
+      _prefs?.setString("key_email", _data["username"].toString());
+      _prefs?.setBool("isLoggedIn", true);
+
+      print(_data["token"]);
+      print(_data["username"]);
+      return true;
     }
+    return false;
   }
 }

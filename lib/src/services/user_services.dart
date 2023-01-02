@@ -18,7 +18,7 @@ class UserServices {
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        print(data["data"]["token"]);
+        //print(data["data"]["token"]);
         return data["data"];
       }
     } catch (e) {
