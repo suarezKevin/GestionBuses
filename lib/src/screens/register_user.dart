@@ -359,7 +359,7 @@ class _RegisterPageState extends State<RegisterPage> {
             .createAccount(_passengerAccount); //peticion a la api
         if (_data["httpStatusCode"].toString() == "201") {
           String full_name = _data["data"]["full_name"];
-          print("Registro Exitoso");
+          print("Registro Exitoso aaaaaaaaaa");
           Navigator.pushReplacement(
             //llevar al usuario a la pagina de Login
             context,
