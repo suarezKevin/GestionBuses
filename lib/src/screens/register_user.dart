@@ -377,6 +377,17 @@ class _RegisterPageState extends State<RegisterPage> {
               duration: Duration(seconds: 4),
             ),
           );
+        } else if (_data["httpStatusCode"].toString() == "400") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            //Mensaje de confirmacion de la cuenta creda
+            SnackBar(
+              content: Text(
+                "¡Ya existe una cuenta asociada a ese email!",
+                textAlign: TextAlign.center,
+              ),
+              duration: Duration(seconds: 4),
+            ),
+          );
         } else {
           print("Error al registrarse");
         }
