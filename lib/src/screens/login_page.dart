@@ -213,16 +213,6 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(context).pushNamed(
         '/home_page',
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "¡Email o contraseña incorrecta!",
-            textAlign: TextAlign.center,
-          ),
-          duration: Duration(seconds: 3),
-        ),
-      );
     }
   }
 
@@ -255,21 +245,92 @@ class _LoginPageState extends State<LoginPage> {
 
   Future _logInUser(BuildContext context) async {
     if (formKey.currentState!.validate()) {
-      print("Que tal");
       formKey.currentState?.save();
       var _data = await UserServices().postLogin(emailValue!, passwordValue!);
       print(passwordValue);
       print(emailValue);
-
-      if (_data["status"].toString() == "401") {
-        print(_data["message"]);
+      if (_data == "Connection timed out") {
+        _showServerMessage(context);
+        return false;
+      } else if (_data == "Connection failed") {
+        _showConnectionFailedMessage(context);
         return false;
       } else {
-        _prefs?.setString("key_token", _data["token"].toString());
-        _prefs?.setString("key_email", _data["username"].toString());
-        return true;
+        if (_data["status"].toString() == "401") {
+          print(_data["message"]);
+          _showCredentialsErrorMessage(context);
+          return false;
+        } else {
+          _prefs?.setString("key_token", _data["token"].toString());
+          _prefs?.setString("key_email", _data["username"].toString());
+          return true;
+        }
       }
     }
-    return false;
+  }
+
+  _showCredentialsErrorMessage(context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "¡Email o contraseña incorrecta!",
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  _showServerMessage(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Servidor fuera de servicio"),
+          content: Text(
+              "¡Estamos trabajando para darte un mejor servicio! Sugerimos que lo intentes después."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Center(
+                child: Text(
+                  "Entendido",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  _showConnectionFailedMessage(context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Conexión Fallida"),
+          content: Text("¡Revise su conexión a internet!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Center(
+                child: Text(
+                  "Entendido",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 }
