@@ -349,54 +349,53 @@ class _RegisterPageState extends State<RegisterPage> {
   Future _createAccount(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState?.save();
-      print(_passengerAccount.password);
-
-      print(_passwordConfirm);
-      if (_passengerAccount.getPassword?.toLowerCase() ==
-          _passwordConfirm?.toLowerCase()) {
+      if (_passengerAccount.getPassword == _passwordConfirm) {
         //validar que las contraseñas sean iguales
         var _data = await UserServices()
             .createAccount(_passengerAccount); //peticion a la api
-        if (_data["httpStatusCode"].toString() == "201") {
-          String full_name = _data["data"]["full_name"];
-          print("Registro Exitoso aaaaaaaaaa");
-          Navigator.pushReplacement(
-            //llevar al usuario a la pagina de Login
-            context,
-            MaterialPageRoute(
-              builder: (context) => LoginPage(),
-            ),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(
-            //Mensaje de confirmacion de la cuenta creda
-            SnackBar(
-              content: Text(
-                "¡Registro exitoso $full_name!",
-                textAlign: TextAlign.center,
-              ),
-              duration: Duration(seconds: 4),
-            ),
-          );
-        } else if (_data["httpStatusCode"].toString() == "400") {
-          ScaffoldMessenger.of(context).showSnackBar(
-            //Mensaje de confirmacion de la cuenta creda
-            SnackBar(
-              content: Text(
-                "¡Ya existe una cuenta asociada a ese email!",
-                textAlign: TextAlign.center,
-              ),
-              duration: Duration(seconds: 4),
-            ),
-          );
+        if (_data == "Connection timed out") {
+          _showServerMessage(context);
+          return false;
+        } else if (_data == "Connection failed") {
+          _showConnectionFailedMessage(context);
+          return false;
         } else {
-          print("Error al registrarse");
+          if (_data["httpStatusCode"].toString() == "201") {
+            String full_name = _data["data"]["full_name"];
+            print("Registro Exitoso aaaaaaaaaa");
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    LoginPage(), //llevar al usuario a la pagina de Login
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "¡Registro exitoso $full_name!", //Mensaje de confirmacion de la cuenta creda
+                  textAlign: TextAlign.center,
+                ),
+                duration: Duration(seconds: 4),
+              ),
+            );
+          } else if (_data["httpStatusCode"].toString() == "400") {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "¡Ya existe una cuenta asociada a ese email!", //Mensaje de confirmacion de la cuenta creda
+                  textAlign: TextAlign.center,
+                ),
+                duration: Duration(seconds: 4),
+              ),
+            );
+          }
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          //Mensaje de confirmacion de la cuenta creda
           SnackBar(
             content: Text(
-              "¡Las contraseñas no son iguales!",
+              "¡Las contraseñas no son iguales!", //Mensaje de confirmacion de la cuenta creda
               textAlign: TextAlign.center,
             ),
             duration: Duration(seconds: 2),
@@ -404,5 +403,56 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       }
     }
+  }
+
+  _showServerMessage(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Servidor fuera de servicio"),
+          content: Text(
+              "¡Estamos trabajando para darte un mejor servicio! Sugerimos que lo intentes después."),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                  child: Text(
+                    "Entendido",
+                  ),
+                ))
+          ],
+        );
+      },
+    );
+  }
+
+  _showConnectionFailedMessage(context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Conexión Fallida"),
+          content: Text("¡Revise su conexión a internet!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Center(
+                child: Text(
+                  "Entendido",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 }

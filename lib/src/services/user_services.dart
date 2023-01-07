@@ -18,16 +18,19 @@ class UserServices {
       );
 
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
+        final body = utf8.decode(response.bodyBytes);
+        Map<String, dynamic> mapDatos = jsonDecode(body);
         //print(data["data"]["token"]);
-        return data["data"];
+        return mapDatos["data"];
       } else {
-        var data = jsonDecode(response.body);
-        return data;
+        final body = utf8.decode(response.bodyBytes);
+        Map<String, dynamic> mapDatos = jsonDecode(body);
+        //print("${mapDatos['message']}");
+        return mapDatos;
       }
     } catch (e) {
       print(e.toString());
-      return null;
+      return e.toString();
     }
   }
 
@@ -52,6 +55,7 @@ class UserServices {
       }
     } catch (e) {
       print(e);
+      return e.toString();
     }
   }
 }
