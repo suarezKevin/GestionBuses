@@ -267,6 +267,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }
+    return false;
   }
 
   _showCredentialsErrorMessage(context) {

@@ -61,6 +61,46 @@ class _HomePageState extends State<HomePage> {
         body: Center(
           child: Column(
             children: [
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Text(
+                  "¿A dónde deseas viajar?",
+                ),
+              ),
+              Container(
+                height: 50,
+                margin:
+                    EdgeInsets.only(left: 30, top: 10, right: 30, bottom: 0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: HexColor("#4169E1")),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white38,
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    labelText: "Origen",
+                    prefixIcon: Icon(Icons.search_rounded),
+                  ),
+                ),
+              ),
+              Container(
+                height: 50,
+                margin:
+                    EdgeInsets.only(left: 30, top: 10, right: 30, bottom: 0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: HexColor("#4169E1")),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white38,
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    labelText: "Destino",
+                    prefixIcon: Icon(Icons.search_rounded),
+                  ),
+                ),
+              ),
               const SizedBox(
                 height: 20,
               ),

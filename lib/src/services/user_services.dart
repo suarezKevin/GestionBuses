@@ -8,7 +8,7 @@ class UserServices {
     try {
       var data = {'email': email, 'password': password};
       var url = Uri.parse(
-          'http://192.168.0.100:8090/bus_link/api/auth/signin/client');
+          'http://192.168.0.101:8090/bus_link/api/auth/signin/client');
       var response = await http.post(
         url,
         headers: <String, String>{
@@ -37,7 +37,7 @@ class UserServices {
   Future createAccount(PassengerAccount passengerAccount) async {
     try {
       var url = Uri.parse(
-          'http://192.168.0.100:8090/bus_link/api/auth/singup/client');
+          'http://192.168.0.101:8090/bus_link/api/auth/singup/client');
       var response = await http.post(
         url,
         headers: <String, String>{
@@ -47,11 +47,13 @@ class UserServices {
       );
 
       if (response.statusCode == 201) {
-        var data = jsonDecode(response.body);
-        return data;
+        final body = utf8.decode(response.bodyBytes);
+        Map<String, dynamic> mapDatos = jsonDecode(body);
+        return mapDatos;
       } else {
-        var data = jsonDecode(response.body);
-        return data;
+        final body = utf8.decode(response.bodyBytes);
+        Map<String, dynamic> mapDatos = jsonDecode(body);
+        return mapDatos;
       }
     } catch (e) {
       print(e);
