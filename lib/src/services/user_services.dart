@@ -60,4 +60,41 @@ class UserServices {
       return e.toString();
     }
   }
+
+  Future getUserByEmail(String email) async {
+    try {
+      var url = Uri.parse(
+          'http://192.168.0.101:8090/bus_link/api/protected/users/username/$email');
+      var response = await http.get(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      if (response.statusCode == 200) {
+        final body = utf8.decode(response.bodyBytes);
+        Map<String, dynamic> mapDatos = jsonDecode(body);
+        return mapDatos;
+      } else {
+        final body = utf8.decode(response.bodyBytes);
+        Map<String, dynamic> mapDatos = jsonDecode(body);
+        return mapDatos;
+      }
+    } catch (e) {
+      print(e.toString());
+      return e.toString();
+    }
+  }
+
+  // Future<bool> isConnected() async {
+  //   bool result = await InternetConnectionChecker().hasConnection;
+  //   if (result == true) {
+  //     print('YAY! Free cute dog pics!');
+  //     return true;
+  //   } else {
+  //     print('No internet :( Reason:');
+  //     print(InternetConnectionChecker());
+  //     return false;
+  //   }
+  // }
 }

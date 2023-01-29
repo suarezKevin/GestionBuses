@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:mobil_app_bus/src/models/user_login.dart';
 import 'package:mobil_app_bus/src/screens/login_page.dart';
+import 'package:mobil_app_bus/src/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,6 +15,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _elementSelect = 0;
   String textoVisualizar = "0: Home";
+  UserLogin? user;
+  String? name;
+  String? emailUser;
+  List<String>? fullname;
+  int sizeListFullname = 0;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,7 +30,10 @@ class _HomePageState extends State<HomePage> {
           ThemeData(scaffoldBackgroundColor: Color.fromRGBO(229, 228, 226, 1)),
       home: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               IconButton(
                 onPressed: () {},
@@ -31,17 +42,40 @@ class _HomePageState extends State<HomePage> {
                   size: 30,
                 ),
               ),
-              const Flexible(
+              Flexible(
                 child: Text(
-                  "Inicio / Bienvenido Nombre Apellido",
+                  "Inicio / Bienvenido(a) $name",
+                  style: TextStyle(fontSize: 15),
                 ),
               )
             ],
           ),
           backgroundColor: HexColor("#000080"),
-          actions: [
-            IconButton(
-                onPressed: () async {
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              UserAccountsDrawerHeader(
+                decoration: BoxDecoration(
+                  color: HexColor("#4169E1"),
+                ),
+                accountName: Text("$name"),
+                accountEmail: Text("$emailUser"),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: HexColor("#000080"),
+                  child: Text(
+                    "${fullname?[0][0]}${fullname?[sizeListFullname - 2][0]}",
+                    style: TextStyle(
+                      fontSize: 40,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.logout_outlined),
+                title: Text('Cerrar Sesión'),
+                onTap: () async {
                   final prefs = await SharedPreferences.getInstance();
                   prefs.setString("key_token", "");
                   prefs.setString("key_email", "");
@@ -53,10 +87,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 },
-                icon: const Icon(
-                  Icons.logout,
-                ))
-          ],
+              ),
+            ],
+          ),
         ),
         body: Center(
           child: Column(
@@ -141,15 +174,6 @@ class _HomePageState extends State<HomePage> {
                               color: HexColor("#4169E1"),
                             ),
                           ),
-                          // SizedBox(
-                          //   width: 200,
-                          //   height: 10,
-                          //   child: Divider(
-                          //     height: 1,
-                          //     thickness: 1.5,
-                          //     color: HexColor("#4169E1"),
-                          //   ),
-                          //),
                           const SizedBox(
                             height: 10,
                           ),
@@ -224,5 +248,57 @@ class _HomePageState extends State<HomePage> {
         default:
       }
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserByEmail();
+  }
+
+  Future getUserByEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String email = prefs.getString("key_email") ?? "";
+    print(email);
+    if (email.isNotEmpty) {
+      print(email + "hola");
+      var response = await UserServices().getUserByEmail(email);
+      print(response);
+      print("hola");
+      //response.toString().substring(0, 10) == "No internet"
+      if (response == "Connection failed") {
+        setState(() {
+          name = prefs.getString("key_fullname");
+          emailUser = prefs.getString("key_email");
+          fullname = name?.split(" ");
+          sizeListFullname = fullname?.length as int;
+        });
+      } else if (response == "Connection timed out") {
+        setState(() {
+          name = prefs.getString("key_fullname");
+          emailUser = prefs.getString("key_email");
+          fullname = name?.split(" ");
+          sizeListFullname = fullname?.length as int;
+        });
+      } else if (response["message"] == "Cliente encontrado exitosamente") {
+        print("exito");
+        setState(() {
+          user = UserLogin(
+              fullName: response["data"]["full_name"],
+              phone: response["data"]["phone"],
+              city: response["data"]["city"],
+              email: response["data"]["email"]);
+          name = user?.getFullName;
+          emailUser = user?.getEmail;
+          fullname = name?.split(" ");
+          sizeListFullname = fullname?.length as int;
+          prefs.setString("key_fullname", name!);
+          //prefs.setString("key_email", emailUser!);
+        });
+      }
+    } else {
+      print("Email vacio");
+    }
   }
 }
