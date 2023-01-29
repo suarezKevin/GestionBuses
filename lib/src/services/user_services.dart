@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:mobil_app_bus/src/models/passenger_account.dart';
 
 class UserServices {
@@ -86,15 +87,14 @@ class UserServices {
     }
   }
 
-  // Future<bool> isConnected() async {
-  //   bool result = await InternetConnectionChecker().hasConnection;
-  //   if (result == true) {
-  //     print('YAY! Free cute dog pics!');
-  //     return true;
-  //   } else {
-  //     print('No internet :( Reason:');
-  //     print(InternetConnectionChecker());
-  //     return false;
-  //   }
-  // }
+  Future<bool> isConnected() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (result == true) {
+      print('YAY! Free cute dog pics!');
+      return true;
+    } else {
+      print('No internet :( Reason:');
+      return false;
+    }
+  }
 }

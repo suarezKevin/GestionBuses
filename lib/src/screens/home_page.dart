@@ -20,6 +20,8 @@ class _HomePageState extends State<HomePage> {
   String? emailUser;
   List<String>? fullname;
   int sizeListFullname = 0;
+  String? image;
+  bool isConeccted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -152,8 +154,13 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(5),
                         ),
-                        child: Image.network(
-                          "https://upload.wikimedia.org/wikipedia/commons/c/c1/Bus-vector-design9.jpg",
+                        child: Image(
+                          image: isConeccted
+                              ? NetworkImage(
+                                      "https://upload.wikimedia.org/wikipedia/commons/c/c1/Bus-vector-design9.jpg")
+                                  as ImageProvider<Object>
+                              : AssetImage("assets/images/imglogin.jpeg")
+                                  as ImageProvider<Object>,
                           width: 120,
                           height: 120,
                           fit: BoxFit.fill,
@@ -254,7 +261,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    checkInternet();
     getUserByEmail();
+  }
+
+  Future<bool> checkInternet() async {
+    isConeccted = await UserServices().isConnected();
+    return isConeccted;
   }
 
   Future getUserByEmail() async {
@@ -294,7 +307,6 @@ class _HomePageState extends State<HomePage> {
           fullname = name?.split(" ");
           sizeListFullname = fullname?.length as int;
           prefs.setString("key_fullname", name!);
-          //prefs.setString("key_email", emailUser!);
         });
       }
     } else {
