@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
 import 'package:mobil_app_bus/src/models/user_login.dart';
 import 'package:mobil_app_bus/src/screens/login_page.dart';
+import 'package:mobil_app_bus/src/services/frequencies_services.dart';
 import 'package:mobil_app_bus/src/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,14 +27,16 @@ class _HomePageState extends State<HomePage> {
   int sizeListFullname = 0;
   String? image;
   bool isConeccted = false;
+  String travelType = "";
+  Future<List<BusFrecuencies>>? frecuenciesList;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Home Page',
-      theme:
-          ThemeData(scaffoldBackgroundColor: Color.fromRGBO(229, 228, 226, 1)),
+      theme: ThemeData(
+          scaffoldBackgroundColor: const Color.fromRGBO(229, 228, 226, 1)),
       home: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -47,7 +54,7 @@ class _HomePageState extends State<HomePage> {
               Flexible(
                 child: Text(
                   "Inicio / Bienvenido(a) $name",
-                  style: TextStyle(fontSize: 15),
+                  style: const TextStyle(fontSize: 15),
                 ),
               )
             ],
@@ -67,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                   backgroundColor: HexColor("#000080"),
                   child: Text(
                     "${fullname?[0][0]}${fullname?[sizeListFullname - 2][0]}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 40,
                       color: Colors.white,
                     ),
@@ -75,8 +82,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               ListTile(
-                leading: Icon(Icons.logout_outlined),
-                title: Text('Cerrar Sesión'),
+                leading: const Icon(Icons.logout_outlined),
+                title: const Text('Cerrar Sesión'),
                 onTap: () async {
                   final prefs = await SharedPreferences.getInstance();
                   prefs.setString("key_token", "");
@@ -97,21 +104,21 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.only(top: 10),
-                child: Text(
+                margin: const EdgeInsets.only(top: 10),
+                child: const Text(
                   "¿A dónde deseas viajar?",
                 ),
               ),
               Container(
                 height: 50,
-                margin:
-                    EdgeInsets.only(left: 30, top: 10, right: 30, bottom: 0),
+                margin: const EdgeInsets.only(
+                    left: 30, top: 10, right: 30, bottom: 0),
                 decoration: BoxDecoration(
                   border: Border.all(color: HexColor("#4169E1")),
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white38,
                 ),
-                child: TextField(
+                child: const TextField(
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     labelText: "Origen",
@@ -121,14 +128,14 @@ class _HomePageState extends State<HomePage> {
               ),
               Container(
                 height: 50,
-                margin:
-                    EdgeInsets.only(left: 30, top: 10, right: 30, bottom: 0),
+                margin: const EdgeInsets.only(
+                    left: 30, top: 10, right: 30, bottom: 0),
                 decoration: BoxDecoration(
                   border: Border.all(color: HexColor("#4169E1")),
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white38,
                 ),
-                child: TextField(
+                child: const TextField(
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     labelText: "Destino",
@@ -139,71 +146,25 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 20,
               ),
-              Card(
-                margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                elevation: 15,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 0, top: 0, right: 15, bottom: 0),
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                        ),
-                        child: Image(
-                          image: isConeccted
-                              ? NetworkImage(
-                                      "https://upload.wikimedia.org/wikipedia/commons/c/c1/Bus-vector-design9.jpg")
-                                  as ImageProvider<Object>
-                              : AssetImage("assets/images/imglogin.jpeg")
-                                  as ImageProvider<Object>,
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.fill,
-                          //color: Colors.red,
-                        ),
+              FutureBuilder(
+                future: frecuenciesList,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    print(snapshot.data);
+                    return Expanded(
+                      child: ListView(
+                        children: busFrecuenciesList(
+                            snapshot.data as List<BusFrecuencies>),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Cooperativa Baños",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: HexColor("#4169E1"),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Text(
-                            "Origen: Ambato",
-                          ),
-                          const Text(
-                            "Destino: Santa Elena",
-                          ),
-                          const Text(
-                            "Precio: \$13.50",
-                          ),
-                          const Text(
-                            "Tipo de asiento: Normal",
-                          ),
-                          const Text(
-                            "Viaje Directo: Si",
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                    );
+                  } else if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return Text("Error");
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
             ],
           ),
@@ -263,6 +224,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     checkInternet();
     getUserByEmail();
+
+    frecuenciesList = getBusFrecuenciesList();
   }
 
   Future<bool> checkInternet() async {
@@ -270,15 +233,19 @@ class _HomePageState extends State<HomePage> {
     return isConeccted;
   }
 
+  Future<List<BusFrecuencies>> getBusFrecuenciesList() async {
+    var response = await BusFrequenciesServices().getListBusFrecuencies();
+
+    return response;
+  }
+
   Future getUserByEmail() async {
     final prefs = await SharedPreferences.getInstance();
     final String email = prefs.getString("key_email") ?? "";
     print(email);
     if (email.isNotEmpty) {
-      print(email + "hola");
       var response = await UserServices().getUserByEmail(email);
       print(response);
-      print("hola");
       //response.toString().substring(0, 10) == "No internet"
       if (response == "Connection failed") {
         setState(() {
@@ -312,5 +279,80 @@ class _HomePageState extends State<HomePage> {
     } else {
       print("Email vacio");
     }
+  }
+
+  List<Widget> busFrecuenciesList(List<BusFrecuencies> data) {
+    List<Widget> frecuencies = [];
+    for (var element in data) {
+      Uint8List? imageBytes;
+      if (element.image != null) {
+        imageBytes = const Base64Decoder().convert(element.image.toString());
+      }
+      travelType = (element.type == "DIRECTO") ? "Si" : "No";
+      frecuencies.add(
+        Card(
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          elevation: 15,
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 0, top: 0, right: 15, bottom: 0),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(5),
+                  ),
+                  // ignore: unnecessary_null_comparison
+                  child: imageBytes != null
+                      ? Image.memory(imageBytes,
+                          width: 120, height: 120, fit: BoxFit.fill)
+                      : Image.asset("assets/images/imglogin.jpeg",
+                          width: 120, height: 120, fit: BoxFit.fill),
+                  //color: Colors.red,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      element.cooperativeName.toString(), //nombre Cooperativa
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: HexColor("#4169E1"),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Origen: ${element.origin}", // origen del viaje
+                    ),
+                    Text(
+                      "Destino: ${element.destiny}", // destino del viaje
+                    ),
+                    Text(
+                      "Precio: \$${element.price}", // precio del viaje
+                    ),
+                    Text(
+                      "Duración: ${element.hours}h:${element.minutes}m aprox.", // duracion del viaje
+                    ),
+                    Text(
+                      "Viaje Directo: $travelType", // Tipo de viaje
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return frecuencies;
   }
 }
