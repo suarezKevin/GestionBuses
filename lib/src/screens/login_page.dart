@@ -152,15 +152,6 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text("Iniciar Sesión"),
-                                // if (_loading)
-                                //   Container(
-                                //     height: 20,
-                                //     width: 20,
-                                //     margin: const EdgeInsets.only(left: 20),
-                                //     child: CircularProgressIndicator(
-                                //       color: Colors.white,
-                                //     ),
-                                //   )
                               ],
                             ),
                           ),
@@ -267,6 +258,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }
+    return false;
   }
 
   _showCredentialsErrorMessage(context) {
