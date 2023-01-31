@@ -6,6 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
 import 'package:mobil_app_bus/src/models/user_login.dart';
 import 'package:mobil_app_bus/src/screens/login_page.dart';
+import 'package:mobil_app_bus/src/screens/ticket_information_page.dart';
 import 'package:mobil_app_bus/src/services/frequencies_services.dart';
 import 'package:mobil_app_bus/src/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -354,71 +355,87 @@ class _HomePageState extends State<HomePage> {
   List<Widget> showBusFrecuenciesList(List<BusFrecuencies> data) {
     List<Widget> frecuencies = [];
     for (var element in data) {
+      BusFrecuencies busFrecuencies = element;
       Uint8List? imageBytes;
       if (element.image != null) {
         imageBytes = const Base64Decoder().convert(element.image.toString());
       }
       travelType = (element.type == "DIRECTO") ? "Si" : "No";
       frecuencies.add(
-        Card(
-          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-          elevation: 15,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 0, top: 0, right: 15, bottom: 0),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(5),
+        GestureDetector(
+          onTap: () {
+            // Navigator.of(context).pushNamed("/ticket_information_page",
+            //     arguments: TicketInformationPage(
+            //       busFrecuencies: busFrecuencies,
+            //     ));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TicketInformationPage(
+                        busFrecuencies: busFrecuencies,
+                      )),
+            );
+          },
+          child: Card(
+            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            elevation: 15,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 0, top: 0, right: 15, bottom: 0),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(5),
+                    ),
+                    // ignore: unnecessary_null_comparison
+                    child: imageBytes != null
+                        ? Image.memory(imageBytes,
+                            width: 120, height: 120, fit: BoxFit.fill)
+                        : Image.asset("assets/images/imglogin.jpeg",
+                            width: 120, height: 120, fit: BoxFit.fill),
+                    //color: Colors.red,
                   ),
-                  // ignore: unnecessary_null_comparison
-                  child: imageBytes != null
-                      ? Image.memory(imageBytes,
-                          width: 120, height: 120, fit: BoxFit.fill)
-                      : Image.asset("assets/images/imglogin.jpeg",
-                          width: 120, height: 120, fit: BoxFit.fill),
-                  //color: Colors.red,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      element.cooperativeName.toString(), //nombre Cooperativa
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: HexColor("#4169E1"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        element.cooperativeName.toString(), //nombre Cooperativa
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: HexColor("#4169E1"),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Origen: ${element.origin}", // origen del viaje
-                    ),
-                    Text(
-                      "Destino: ${element.destiny}", // destino del viaje
-                    ),
-                    Text(
-                      "Precio: \$${element.price}", // precio del viaje
-                    ),
-                    Text(
-                      "Duración: ${element.hours}h:${element.minutes}m aprox.", // duracion del viaje
-                    ),
-                    Text(
-                      "Viaje Directo: $travelType", // Tipo de viaje
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Origen: ${element.origin}", // origen del viaje
+                      ),
+                      Text(
+                        "Destino: ${element.destiny}", // destino del viaje
+                      ),
+                      Text(
+                        "Precio: \$${element.price}", // precio del viaje
+                      ),
+                      Text(
+                        "Duración: ${element.hours}h:${element.minutes}m aprox.", // duracion del viaje
+                      ),
+                      Text(
+                        "Viaje Directo: $travelType", // Tipo de viaje
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

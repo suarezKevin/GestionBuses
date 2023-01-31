@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobil_app_bus/src/screens/home_page.dart';
 import 'package:mobil_app_bus/src/screens/login_page.dart';
 import 'package:mobil_app_bus/src/screens/register_user.dart';
+import 'package:mobil_app_bus/src/screens/ticket_information_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, this.existEmail});
@@ -17,13 +18,14 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) {
           if (existEmail!.isEmpty) {
-            return LoginPage();
+            return const LoginPage();
           } else {
-            return HomePage();
+            return const HomePage();
           }
         },
-        "/register": (context) => RegisterPage(),
-        "/home_page": (context) => HomePage(),
+        "/register": (context) => const RegisterPage(),
+        "/home_page": (context) => const HomePage(),
+        "/ticket_information_page": (context) => TicketInformationPage(),
       },
     );
   }
