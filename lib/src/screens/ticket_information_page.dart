@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
+import 'package:mobil_app_bus/src/screens/seat_selection_page.dart';
 
 class TicketInformationPage extends StatefulWidget {
   TicketInformationPage({super.key, this.busFrecuencies});
@@ -322,8 +323,12 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed(
-                      '/seat_selection_page',
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SeatSelectionPage(
+                                busFrecuencies: widget.busFrecuencies,
+                              )),
                     );
                   },
                 ),

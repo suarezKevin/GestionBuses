@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         "/register": (context) => const RegisterPage(),
         "/home_page": (context) => const HomePage(),
         "/ticket_information_page": (context) => TicketInformationPage(),
-        "/seat_selection_page": (context) => const SeatSelectionPage(),
+        "/seat_selection_page": (context) => SeatSelectionPage(),
       },
     );
   }
