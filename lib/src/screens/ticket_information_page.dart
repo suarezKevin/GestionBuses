@@ -38,21 +38,23 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
         body: Center(
           child: Column(
             children: [
-              Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 20),
-                width: 300,
-                height: 280,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(5),
+              Flexible(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 10, bottom: 20),
+                  width: 300,
+                  height: 280,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(5),
+                    ),
+                    // ignore: unnecessary_null_comparison
+                    child: imageBytes != null
+                        ? Image.memory(imageBytes,
+                            width: 120, height: 120, fit: BoxFit.fill)
+                        : Image.asset("assets/images/imglogin.jpeg",
+                            width: 120, height: 120, fit: BoxFit.fill),
+                    //color: Colors.red,
                   ),
-                  // ignore: unnecessary_null_comparison
-                  child: imageBytes != null
-                      ? Image.memory(imageBytes,
-                          width: 120, height: 120, fit: BoxFit.fill)
-                      : Image.asset("assets/images/imglogin.jpeg",
-                          width: 120, height: 120, fit: BoxFit.fill),
-                  //color: Colors.red,
                 ),
               ),
               Text(
@@ -249,7 +251,9 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showConfirmDialog();
+                      },
                       child: const Text(
                         "Iniciar Compra",
                         style: TextStyle(fontSize: 20),
@@ -263,7 +267,9 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                           )),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        returnHome();
+                      },
                       child: const Text(
                         "Cancelar",
                         style: TextStyle(fontSize: 20),
@@ -288,4 +294,10 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
   }
 
   void showConfirmDialog() {}
+
+  void returnHome() {
+    Navigator.of(context).pushNamed(
+      '/home_page',
+    );
+  }
 }
