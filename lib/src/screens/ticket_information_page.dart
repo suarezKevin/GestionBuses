@@ -71,7 +71,7 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                     padding: EdgeInsets.only(top: 10, right: 10),
                     child: Column(
                       children: [
-                        Text("Detalle"),
+                        Text("Detalle Viaje"),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -257,7 +257,10 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                       style: ElevatedButton.styleFrom(
                           elevation: 15,
                           padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20)),
+                              vertical: 10, horizontal: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          )),
                     ),
                     ElevatedButton(
                       onPressed: () {},
@@ -269,7 +272,10 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                           backgroundColor: Colors.red,
                           elevation: 15,
                           padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 45)),
+                              vertical: 10, horizontal: 45),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          )),
                     )
                   ],
                 ),
