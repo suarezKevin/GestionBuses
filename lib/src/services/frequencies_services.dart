@@ -22,6 +22,15 @@ class BusFrequenciesServices {
         final body = utf8.decode(response.bodyBytes);
         final mapDatos = jsonDecode(body);
         for (var element in mapDatos["data"]) {
+          List<Seating> seatList = [];
+          for (var seating in element["bus"]["seating"]) {
+            seatList.add(
+              Seating(
+                  number: seating["number"],
+                  type: seating["type"],
+                  status: seating["status"]),
+            );
+          }
           frecuenciesList.add(BusFrecuencies(
               idBus: element["bus"]["id"],
               cooperativeName: element["bus"]["cooperative"]["name"],
@@ -39,7 +48,8 @@ class BusFrequenciesServices {
               hours: element["frequency"]["hours"],
               departureTime: element["departureTime"],
               busNumber: element["bus"]["busNumber"],
-              stops: element["frequency"]["stops"]));
+              stops: element["frequency"]["stops"],
+              seating: seatList));
         }
         print("saludos");
         print(frecuenciesList.length);
