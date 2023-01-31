@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                     List<BusFrecuencies> data =
                         snapshot.data as List<BusFrecuencies>;
                     if (data.isEmpty) {
-                      return Column(children: [
+                      return Column(children: const [
                         Text(
                           "¡Ups! No se encontraron resultados.",
                           style: TextStyle(fontWeight: FontWeight.bold),
@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   } else if (snapshot.hasError) {
                     print(snapshot.error);
-                    return Text("Error");
+                    return const Text("Error");
                   }
                   return const Text("¡Inicie su búsqueda usando la lupa!");
                 },

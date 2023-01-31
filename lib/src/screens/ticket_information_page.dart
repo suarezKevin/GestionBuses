@@ -30,9 +30,8 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
           scaffoldBackgroundColor: const Color.fromRGBO(229, 228, 226, 1)),
       home: Scaffold(
         appBar: AppBar(
-          title: Align(
-              alignment: Alignment.center,
-              child: const Text('Boleto - Información')),
+          title: const Align(
+              alignment: Alignment.center, child: Text('Boleto - Información')),
           backgroundColor: HexColor("#000080"),
         ),
         body: Center(
@@ -70,10 +69,10 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(top: 10, right: 10),
+                    padding: const EdgeInsets.only(top: 10, right: 10),
                     child: Column(
                       children: [
-                        Text("Detalle Viaje"),
+                        const Text("Detalle Viaje"),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -162,7 +161,7 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                               ),
                               Text(
                                 widget.busFrecuencies!.departureTime.toString(),
-                                style: TextStyle(fontSize: 20),
+                                style: const TextStyle(fontSize: 20),
                               )
                             ]),
                       ],
@@ -170,7 +169,7 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                   ),
                   //Segunda Columna
                   Container(
-                    padding: EdgeInsets.only(bottom: 35),
+                    padding: const EdgeInsets.only(bottom: 35),
                     child: Column(
                       children: [
                         Text("Info. Bus"),
@@ -293,7 +292,57 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
     );
   }
 
-  void showConfirmDialog() {}
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {});
+  }
+
+  void showConfirmDialog() {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirmar para Iniciar Compra"),
+          content: Text(
+            "¿Desea continuar con la compra del boleto?",
+            style: TextStyle(fontSize: 18),
+          ),
+          actions: <Widget>[
+            Align(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  child: Text(
+                    "Aceptar",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed(
+                      '/seat_selection_page',
+                    );
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                    "Cancelar",
+                    style: TextStyle(color: Colors.red, fontSize: 18),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            )),
+          ],
+        );
+      },
+    );
+  }
 
   void returnHome() {
     Navigator.of(context).pushNamed(
