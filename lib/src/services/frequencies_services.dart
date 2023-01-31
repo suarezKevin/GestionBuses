@@ -4,8 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
 
 class BusFrequenciesServices {
-  Future getListBusFrecuencies() async {
+  Future getListBusFrecuencies(String origin, String destiny) async {
     try {
+      var data = {"origen": origin, "destiny": destiny};
       var url = Uri.parse(
           'http://192.168.0.101:8090/bus_link/api/protected/itineraries/find');
       var response = await http.post(
@@ -13,6 +14,7 @@ class BusFrequenciesServices {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
+        body: jsonEncode(data),
       );
       print(response);
       List<BusFrecuencies> frecuenciesList = [];

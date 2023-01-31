@@ -18,6 +18,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final formKey = GlobalKey<FormState>();
   int _elementSelect = 0;
   String textoVisualizar = "0: Home";
   UserLogin? user;
@@ -29,6 +30,10 @@ class _HomePageState extends State<HomePage> {
   bool isConeccted = false;
   String travelType = "";
   Future<List<BusFrecuencies>>? frecuenciesList;
+  TextEditingController? originController;
+  TextEditingController? destinyController;
+  String? originValue;
+  String? destinyValue;
 
   @override
   Widget build(BuildContext context) {
@@ -107,42 +112,76 @@ class _HomePageState extends State<HomePage> {
                 margin: const EdgeInsets.only(top: 10),
                 child: const Text(
                   "¿A dónde deseas viajar?",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              Container(
-                height: 50,
-                margin: const EdgeInsets.only(
-                    left: 30, top: 10, right: 30, bottom: 0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: HexColor("#4169E1")),
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white38,
-                ),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    labelText: "Origen",
-                    prefixIcon: Icon(Icons.search_rounded),
-                  ),
-                ),
-              ),
-              Container(
-                height: 50,
-                margin: const EdgeInsets.only(
-                    left: 30, top: 10, right: 30, bottom: 0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: HexColor("#4169E1")),
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white38,
-                ),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    labelText: "Destino",
-                    prefixIcon: Icon(Icons.search_rounded),
-                  ),
-                ),
-              ),
+              Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 50,
+                        margin: const EdgeInsets.only(
+                            left: 30, top: 10, right: 30, bottom: 0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: HexColor("#4169E1")),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white38,
+                        ),
+                        child: TextFormField(
+                          controller: originController,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            labelText: "Origen",
+                            prefixIcon: Icon(Icons.location_city),
+                          ),
+                          onSaved: (newValue) {
+                            originValue = newValue;
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Campo Obligatorio";
+                            }
+                          },
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        margin: const EdgeInsets.only(
+                            left: 30, top: 10, right: 30, bottom: 0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: HexColor("#4169E1")),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white38,
+                        ),
+                        child: TextFormField(
+                          controller: destinyController,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            labelText: "Destino",
+                            prefixIcon: const Icon(Icons.location_city),
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  validateBusFrecuenciesList();
+                                },
+                                icon: const Icon(
+                                  Icons.search_rounded,
+                                  size: 40,
+                                  color: Colors.black87,
+                                )),
+                          ),
+                          onSaved: (newValue) {
+                            destinyValue = newValue;
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Campo Obligatorio";
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  )),
               const SizedBox(
                 height: 20,
               ),
@@ -150,20 +189,30 @@ class _HomePageState extends State<HomePage> {
                 future: frecuenciesList,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    print(snapshot.data);
+                    List<BusFrecuencies> data =
+                        snapshot.data as List<BusFrecuencies>;
+                    if (data.isEmpty) {
+                      return Column(children: [
+                        Text(
+                          "¡Ups! No se encontraron resultados.",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "Verifique su búsqueda, por favor.",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ]);
+                    }
                     return Expanded(
                       child: ListView(
-                        children: busFrecuenciesList(
-                            snapshot.data as List<BusFrecuencies>),
+                        children: showBusFrecuenciesList(data),
                       ),
                     );
                   } else if (snapshot.hasError) {
                     print(snapshot.error);
                     return Text("Error");
                   }
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Text("¡Inicie su búsqueda usando la lupa!");
                 },
               ),
             ],
@@ -224,8 +273,15 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     checkInternet();
     getUserByEmail();
+    originController = TextEditingController();
+    destinyController = TextEditingController();
+  }
 
-    frecuenciesList = getBusFrecuenciesList();
+  @override
+  void dispose() {
+    super.dispose();
+    originController?.dispose();
+    destinyController?.dispose();
   }
 
   Future<bool> checkInternet() async {
@@ -233,8 +289,22 @@ class _HomePageState extends State<HomePage> {
     return isConeccted;
   }
 
+  void validateBusFrecuenciesList() {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState?.save();
+      print(originValue);
+      print(destinyValue);
+
+      setState(() {
+        frecuenciesList = getBusFrecuenciesList();
+      });
+      print(frecuenciesList);
+    }
+  }
+
   Future<List<BusFrecuencies>> getBusFrecuenciesList() async {
-    var response = await BusFrequenciesServices().getListBusFrecuencies();
+    var response = await BusFrequenciesServices()
+        .getListBusFrecuencies(originValue!.trim(), destinyValue!.trim());
 
     return response;
   }
@@ -281,7 +351,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  List<Widget> busFrecuenciesList(List<BusFrecuencies> data) {
+  List<Widget> showBusFrecuenciesList(List<BusFrecuencies> data) {
     List<Widget> frecuencies = [];
     for (var element in data) {
       Uint8List? imageBytes;
