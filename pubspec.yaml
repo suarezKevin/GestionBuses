@@ -38,6 +38,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   hexcolor: ^3.0.1
   image_picker: ^0.8.6
+  http: ^0.13.5
+  shared_preferences: ^2.0.15
+  internet_connection_checker: ^1.0.0+1
+  connectivity_plus: ^3.0.2
 
 dev_dependencies:
   flutter_test:
