@@ -13,11 +13,18 @@ class SeatSelectionPage extends StatefulWidget {
 class _SeatSelectionPageState extends State<SeatSelectionPage> {
   List<int> numberSeatList = [];
   List<int> numberOccupiedSeatList = [];
-  String asStringList = "";
+  String asSeatStringList = "";
+  double total = 0.0;
+  double? basePrice = 0.0;
+  double? vip = 0.0;
+  double? vipPrice = 0.0;
 
   @override
   Widget build(BuildContext context) {
     List<Seating>? seatList = widget.busFrecuencies?.seating;
+    basePrice = widget.busFrecuencies?.price;
+    vip = widget.busFrecuencies?.vipPrice;
+    vipPrice = basePrice! + vip!;
     return Scaffold(
       appBar: AppBar(
         title: const Align(
@@ -35,10 +42,40 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
                   "Asientos Seleccionados: ",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                 ),
-                Text(asStringList), //cantidad de asientos
+                Flexible(child: Text(asSeatStringList)), //cantidad de asientos
               ]),
             ),
             Column(children: [
+              Row(children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 5),
+                  child: Row(
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.only(right: 0),
+                          child: Text(
+                            "Total a Pagar: ",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 17),
+                          )),
+                      Text("\$" + total.toStringAsFixed(2)),
+                    ],
+                  ),
+                ),
+              ]),
+              Row(children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 5),
+                  child: Row(
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.only(right: 70),
+                          child: Text("Precio Normal: \$$basePrice")),
+                      Text("Precio VIP: \$$vipPrice"),
+                    ],
+                  ),
+                ),
+              ]),
               Row(
                 children: [
                   Padding(
@@ -123,8 +160,7 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              chooseSeat(
-                                  context, seatList[index].number.toString());
+                              chooseSeat(context, seatList[index]);
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -202,16 +238,20 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
     );
   }
 
-  void chooseSeat(BuildContext context, String number) {
-    if (numberOccupiedSeatList.contains(int.parse(number))) {
+  void chooseSeat(BuildContext context, Seating seating) {
+    if (numberOccupiedSeatList.contains(seating.number)) {
       _showOccupiedSeatMessage(context);
     } else {
-      if (numberSeatList.contains(int.parse(number))) {
+      if (numberSeatList.contains(seating.number)) {
         _showAddNumberMessage(context);
       } else {
-        numberSeatList.add(int.parse(number));
+        numberSeatList.add(seating.number!);
+        total += basePrice!;
+        if (seating.type.toString() == "VIP") {
+          total += vip!;
+        }
         setState(() {
-          asStringList = numberSeatList.join(", ");
+          asSeatStringList = numberSeatList.join(", ");
           for (var element in numberSeatList) {
             print(element);
           }
