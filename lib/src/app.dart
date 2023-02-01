@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobil_app_bus/src/screens/home_page.dart';
 import 'package:mobil_app_bus/src/screens/login_page.dart';
 import 'package:mobil_app_bus/src/screens/register_user.dart';
+import 'package:mobil_app_bus/src/screens/seat_selection_page.dart';
 import 'package:mobil_app_bus/src/screens/ticket_information_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         "/register": (context) => const RegisterPage(),
         "/home_page": (context) => const HomePage(),
         "/ticket_information_page": (context) => TicketInformationPage(),
+        "/seat_selection_page": (context) => SeatSelectionPage(),
       },
     );
   }

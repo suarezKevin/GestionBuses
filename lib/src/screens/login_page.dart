@@ -261,9 +261,9 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
-  _showCredentialsErrorMessage(context) {
+  void _showCredentialsErrorMessage(context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text(
           "¡Email o contraseña incorrecta!",
           textAlign: TextAlign.center,
@@ -279,15 +279,15 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Servidor fuera de servicio"),
-          content: Text(
+          title: const Text("Servidor fuera de servicio"),
+          content: const Text(
               "¡Estamos trabajando para darte un mejor servicio! Sugerimos que lo intentes después."),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Center(
+              child: const Center(
                 child: Text(
                   "Entendido",
                   textAlign: TextAlign.center,
@@ -306,14 +306,14 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Conexión Fallida"),
-          content: Text("¡Revise su conexión a internet!"),
+          title: const Text("Conexión Fallida"),
+          content: const Text("¡Revise su conexión a internet!"),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Center(
+              child: const Center(
                 child: Text(
                   "Entendido",
                   textAlign: TextAlign.center,

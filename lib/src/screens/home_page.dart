@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController? destinyController;
   String? originValue;
   String? destinyValue;
+  String? client_id;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                     List<BusFrecuencies> data =
                         snapshot.data as List<BusFrecuencies>;
                     if (data.isEmpty) {
-                      return Column(children: [
+                      return Column(children: const [
                         Text(
                           "¡Ups! No se encontraron resultados.",
                           style: TextStyle(fontWeight: FontWeight.bold),
@@ -211,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   } else if (snapshot.hasError) {
                     print(snapshot.error);
-                    return Text("Error");
+                    return const Text("Error");
                   }
                   return const Text("¡Inicie su búsqueda usando la lupa!");
                 },
@@ -335,6 +336,7 @@ class _HomePageState extends State<HomePage> {
       } else if (response["message"] == "Cliente encontrado exitosamente") {
         print("exito");
         setState(() {
+          client_id = response["data"]["id"];
           user = UserLogin(
               fullName: response["data"]["full_name"],
               phone: response["data"]["phone"],
@@ -364,16 +366,11 @@ class _HomePageState extends State<HomePage> {
       frecuencies.add(
         GestureDetector(
           onTap: () {
-            // Navigator.of(context).pushNamed("/ticket_information_page",
-            //     arguments: TicketInformationPage(
-            //       busFrecuencies: busFrecuencies,
-            //     ));
             Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => TicketInformationPage(
-                        busFrecuencies: busFrecuencies,
-                      )),
+                      busFrecuencies: busFrecuencies, client_id: client_id)),
             );
           },
           child: Card(
