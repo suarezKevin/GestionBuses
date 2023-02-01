@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
+import 'package:mobil_app_bus/src/models/bus_ticket.dart';
+import 'package:mobil_app_bus/src/screens/home_page.dart';
+import 'package:mobil_app_bus/src/services/bookings_services.dart';
 
 class SeatSelectionPage extends StatefulWidget {
-  SeatSelectionPage({super.key, this.busFrecuencies});
+  SeatSelectionPage({super.key, this.busFrecuencies, this.client_id});
   BusFrecuencies? busFrecuencies;
+  String? client_id;
 
   @override
   State<SeatSelectionPage> createState() => _SeatSelectionPageState();
@@ -18,6 +22,8 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
   double? basePrice = 0.0;
   double? vip = 0.0;
   double? vipPrice = 0.0;
+
+  BusTicket? busTicket;
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +208,9 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _validateFields();
+                    },
                     child: const Text(
                       "Confirmar",
                       style: TextStyle(fontSize: 20),
@@ -239,14 +247,14 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
         ),
       ),
       floatingActionButton: Align(
-        alignment: AlignmentDirectional(0.1, 0.89),
+        alignment: const AlignmentDirectional(0.1, 0.89),
         child: FloatingActionButton(
           backgroundColor: Colors.green[500],
           onPressed: () {
             clearTotalSeatList();
           },
           elevation: 40,
-          child: Icon(Icons.restart_alt_outlined),
+          child: const Icon(Icons.restart_alt_outlined),
           tooltip: "Reiniciar selección",
         ),
       ),
@@ -299,11 +307,128 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
     );
   }
 
+  _validateFields() {
+    if (numberSeatList.isEmpty) {
+      _showNotChooseSeatMessage(context);
+    } else {
+      showBookingConfirmDialog(context);
+    }
+  }
+
+  Future _generateBookings() async {
+    busTicket = BusTicket(
+        cooperative: widget.busFrecuencies?.cooperativeName.toString(),
+        client_id: widget.client_id.toString(),
+        busNumber: widget.busFrecuencies?.busNumber,
+        price: double.parse(total.toStringAsFixed(2)),
+        departureTime: widget.busFrecuencies?.departureTime.toString(),
+        origen: widget.busFrecuencies?.origin.toString(),
+        destiny: widget.busFrecuencies?.destiny.toString(),
+        seatings: numberSeatList);
+
+    var response = await BookingsServices().generateBookings(busTicket!);
+    if (response["message"] == "Compra exitosa") {
+      showBookingGenerateConfirmDialog(context);
+    }
+  }
+
   void clearTotalSeatList() {
     setState(() {
       asSeatStringList = "";
       numberSeatList = [];
       total = 0.00;
     });
+  }
+
+  void showBookingConfirmDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmar Reserva"),
+          content: const Text(
+            "¡Al presionar en confirmar, generará su reserva y debera subir el comprobante de pago para su verificación y validación!",
+            style: TextStyle(fontSize: 18),
+          ),
+          actions: <Widget>[
+            Align(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  child: const Text(
+                    "Confirmar",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _generateBookings();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    "Cancelar",
+                    style: TextStyle(color: Colors.red, fontSize: 18),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            )),
+          ],
+        );
+      },
+    );
+  }
+
+  _showNotChooseSeatMessage(context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "¡No puede continuar con la compra, primero escoga un asiento!",
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void showBookingGenerateConfirmDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Reserva Generada"),
+          content: const Text(
+            "¡Reserva Generada con éxito!",
+            style: TextStyle(fontSize: 18),
+          ),
+          actions: <Widget>[
+            Align(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  child: const Text(
+                    "Ir a Inicio",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  },
+                ),
+              ],
+            )),
+          ],
+        );
+      },
+    );
   }
 }

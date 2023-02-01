@@ -7,8 +7,9 @@ import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
 import 'package:mobil_app_bus/src/screens/seat_selection_page.dart';
 
 class TicketInformationPage extends StatefulWidget {
-  TicketInformationPage({super.key, this.busFrecuencies});
+  TicketInformationPage({super.key, this.busFrecuencies, this.client_id});
   BusFrecuencies? busFrecuencies;
+  String? client_id;
 
   @override
   State<TicketInformationPage> createState() => _TicketInformationPageState();
@@ -323,8 +324,8 @@ class _TicketInformationPageState extends State<TicketInformationPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => SeatSelectionPage(
-                                busFrecuencies: widget.busFrecuencies,
-                              )),
+                              busFrecuencies: widget.busFrecuencies,
+                              client_id: widget.client_id)),
                     );
                   },
                 ),
