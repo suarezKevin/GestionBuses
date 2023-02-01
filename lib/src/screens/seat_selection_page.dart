@@ -26,9 +26,10 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
     vip = widget.busFrecuencies?.vipPrice;
     vipPrice = basePrice! + vip!;
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(229, 228, 226, 1),
       appBar: AppBar(
         title: const Align(
-            alignment: Alignment.center,
+            alignment: Alignment.centerLeft,
             child: Text('Selección Asiento - Boleto')),
         backgroundColor: HexColor("#000080"),
       ),
@@ -53,12 +54,12 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
                     children: [
                       Container(
                           padding: const EdgeInsets.only(right: 0),
-                          child: Text(
+                          child: const Text(
                             "Total a Pagar: ",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 17),
                           )),
-                      Text("\$" + total.toStringAsFixed(2)),
+                      Text("\$${total.toStringAsFixed(2)}"),
                     ],
                   ),
                 ),
@@ -143,7 +144,7 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
             ]),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(20.0),
                 child: GridView.count(
                   crossAxisSpacing: 20,
                   mainAxisSpacing: 0,
@@ -195,7 +196,7 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 10, bottom: 20),
+              margin: const EdgeInsets.only(top: 10, bottom: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -208,14 +209,16 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
                     ),
                     style: ElevatedButton.styleFrom(
                         elevation: 15,
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 40),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         )),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: const Text(
                       "Cancelar",
                       style: TextStyle(fontSize: 20),
@@ -223,8 +226,8 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         elevation: 15,
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 45),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 45),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         )),
@@ -233,6 +236,18 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
               ),
             ),
           ],
+        ),
+      ),
+      floatingActionButton: Align(
+        alignment: AlignmentDirectional(0.1, 0.89),
+        child: FloatingActionButton(
+          backgroundColor: Colors.green[500],
+          onPressed: () {
+            clearTotalSeatList();
+          },
+          elevation: 40,
+          child: Icon(Icons.restart_alt_outlined),
+          tooltip: "Reiniciar selección",
         ),
       ),
     );
@@ -282,5 +297,13 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
         duration: Duration(seconds: 3),
       ),
     );
+  }
+
+  void clearTotalSeatList() {
+    setState(() {
+      asSeatStringList = "";
+      numberSeatList = [];
+      total = 0.00;
+    });
   }
 }
