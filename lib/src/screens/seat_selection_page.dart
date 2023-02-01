@@ -27,26 +27,127 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
         body: Center(
           child: Column(
             children: [
-              // Expanded(
-              //   child: ListView.builder(
-              //     itemCount: seatList!.length,
-              //     itemBuilder: (context, index) {
-              //       return ListTile(
-              //           title: Text(seatList[index].number.toString()));
-              //     },
-              //   ),
-              // )
+              Container(
+                margin: EdgeInsets.only(left: 20, top: 10),
+                child: Row(children: [
+                  Text(
+                    "N° de Asientos Seleccionados: ",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  ),
+                  Text(""), //cantidad de asientos
+                ]),
+              ),
+              Column(children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 20, top: 5, right: 15),
+                      child: Row(children: [
+                        Text("Libre: "),
+                        Container(
+                          height: 15,
+                          width: 15,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: Colors.blue),
+                        ),
+                      ]),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5, right: 10),
+                      child: Row(children: [
+                        Text("Ocupado: "),
+                        Container(
+                          height: 15,
+                          width: 15,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: Colors.red),
+                        ),
+                      ]),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 45, top: 5, right: 15),
+                      child: Row(children: [
+                        Text("Normal: "),
+                        Container(
+                          height: 15,
+                          width: 15,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: Colors.black),
+                        ),
+                      ]),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5, right: 10),
+                      child: Row(children: [
+                        Text("VIP: "),
+                        Container(
+                          height: 15,
+                          width: 15,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: Colors.yellowAccent[700]),
+                        ),
+                      ]),
+                    ),
+                  ],
+                )
+              ]),
               Expanded(
-                child: GridView.count(
-                  crossAxisCount: 4,
-                  children: List.generate(seatList!.length, (index) {
-                    return Center(
-                      child: Text(
-                        seatList[index].number.toString(),
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    );
-                  }),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: GridView.count(
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 0,
+                    crossAxisCount: 4,
+                    children: List.generate(seatList!.length, (index) {
+                      return Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onDoubleTap: () {},
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(30),
+                                    ),
+                                    color: seatList[index].status.toString() ==
+                                            "OCUPADO"
+                                        ? Colors.red
+                                        : Colors.blue),
+                                padding: EdgeInsets.all(15),
+                                child: Row(children: [
+                                  Icon(Icons.chair_sharp,
+                                      color: seatList[index].type.toString() ==
+                                              "VIP"
+                                          ? Colors.yellowAccent[700]
+                                          : Colors.black),
+                                  Text(
+                                    seatList[index].number.toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
                 ),
               ),
             ],
