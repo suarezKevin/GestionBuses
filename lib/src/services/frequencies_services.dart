@@ -8,7 +8,7 @@ class BusFrequenciesServices {
     try {
       var data = {"origen": origin, "destiny": destiny};
       var url = Uri.parse(
-          'http://192.168.0.101:8090/bus_link/api/protected/itineraries/find');
+          'https://buslink-backend-production.up.railway.app/bus_link/api/protected/itineraries/find');
       var response = await http.post(
         url,
         headers: <String, String>{

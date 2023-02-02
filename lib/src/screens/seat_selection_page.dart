@@ -78,7 +78,7 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
                       Container(
                           padding: const EdgeInsets.only(right: 70),
                           child: Text("Precio Normal: \$$basePrice")),
-                      Text("Precio VIP: \$$vipPrice"),
+                      Text("Precio VIP: \$${vipPrice?.toStringAsFixed(2)}"),
                     ],
                   ),
                 ),
