@@ -6,8 +6,8 @@ import 'package:mobil_app_bus/src/models/bus_ticket.dart';
 class BookingsServices {
   Future generateBookings(BusTicket busTicket) async {
     try {
-      var url =
-          Uri.parse('http://192.168.0.101:8090/bus_link/api/protected/tickets');
+      var url = Uri.parse(
+          'https://buslink-backend-production.up.railway.app/bus_link/api/protected/tickets');
       var response = await http.post(
         url,
         headers: <String, String>{

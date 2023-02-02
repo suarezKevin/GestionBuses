@@ -9,7 +9,7 @@ class UserServices {
     try {
       var data = {'email': email, 'password': password};
       var url = Uri.parse(
-          'http://192.168.0.101:8090/bus_link/api/auth/signin/client');
+          'https://buslink-backend-production.up.railway.app/bus_link/api/auth/signin/client');
       var response = await http.post(
         url,
         headers: <String, String>{
@@ -38,7 +38,7 @@ class UserServices {
   Future createAccount(PassengerAccount passengerAccount) async {
     try {
       var url = Uri.parse(
-          'http://192.168.0.101:8090/bus_link/api/auth/singup/client');
+          'https://buslink-backend-production.up.railway.app/bus_link/api/auth/singup/client');
       var response = await http.post(
         url,
         headers: <String, String>{
@@ -65,7 +65,7 @@ class UserServices {
   Future getUserByEmail(String email) async {
     try {
       var url = Uri.parse(
-          'http://192.168.0.101:8090/bus_link/api/protected/users/username/$email');
+          'https://buslink-backend-production.up.railway.app/bus_link/api/protected/users/username/$email');
       var response = await http.get(
         url,
         headers: <String, String>{
