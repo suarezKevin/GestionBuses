@@ -3,6 +3,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
 import 'package:mobil_app_bus/src/models/bus_ticket.dart';
 import 'package:mobil_app_bus/src/screens/home_page.dart';
+import 'package:mobil_app_bus/src/screens/main_navigator_page.dart';
 import 'package:mobil_app_bus/src/services/bookings_services.dart';
 
 class SeatSelectionPage extends StatefulWidget {
@@ -420,7 +421,8 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
                     Navigator.of(context).pop();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(
+                          builder: (context) => const MainNavigator()),
                     );
                   },
                 ),
