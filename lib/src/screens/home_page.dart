@@ -89,6 +89,7 @@ class _HomePageState extends State<HomePage> {
                 final prefs = await SharedPreferences.getInstance();
                 prefs.setString("key_token", "");
                 prefs.setString("key_email", "");
+                prefs.setString("key_client_id", "");
                 // ignore: use_build_context_synchronously
                 Navigator.pushReplacement(
                   context,
@@ -301,6 +302,7 @@ class _HomePageState extends State<HomePage> {
             fullname = name?.split(" ");
             sizeListFullname = fullname?.length as int;
             prefs.setString("key_fullname", name!);
+            prefs.setString("key_client_id", response["data"]["id"]);
           });
         }
       }
