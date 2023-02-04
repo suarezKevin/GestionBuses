@@ -32,6 +32,9 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
     basePrice = widget.busFrecuencies?.price;
     vip = widget.busFrecuencies?.vipPrice;
     vipPrice = basePrice! + vip!;
+    for (var element in numberSeatList) {
+      print(element);
+    }
     return Scaffold(
       backgroundColor: const Color.fromRGBO(229, 228, 226, 1),
       appBar: AppBar(
