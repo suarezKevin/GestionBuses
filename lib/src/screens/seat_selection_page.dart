@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
 import 'package:mobil_app_bus/src/models/bus_ticket.dart';
+import 'package:mobil_app_bus/src/models/seating.dart';
 import 'package:mobil_app_bus/src/screens/home_page.dart';
 import 'package:mobil_app_bus/src/services/bookings_services.dart';
 
@@ -31,6 +32,9 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
     basePrice = widget.busFrecuencies?.price;
     vip = widget.busFrecuencies?.vipPrice;
     vipPrice = basePrice! + vip!;
+    for (var element in numberSeatList) {
+      print(element);
+    }
     return Scaffold(
       backgroundColor: const Color.fromRGBO(229, 228, 226, 1),
       appBar: AppBar(
@@ -420,7 +424,7 @@ class _SeatSelectionPageState extends State<SeatSelectionPage> {
                     Navigator.of(context).pop();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => const HomePage()),
                     );
                   },
                 ),

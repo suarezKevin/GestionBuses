@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
+import 'package:mobil_app_bus/src/models/seating.dart';
 
 class BusFrequenciesServices {
   Future getListBusFrecuencies(String origin, String destiny) async {
