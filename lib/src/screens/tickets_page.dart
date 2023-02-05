@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mobil_app_bus/src/models/ticket_history.dart';
+import 'package:mobil_app_bus/src/screens/home_page.dart';
 import 'package:mobil_app_bus/src/services/tickes_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +13,7 @@ class TicketsPage extends StatefulWidget {
 }
 
 class _TicketsPageState extends State<TicketsPage> {
+  int _selected_index = 0;
   Future<List<TicketHistory>>? ticketHistoryList;
   String? asSeatStringList;
 
@@ -19,6 +21,7 @@ class _TicketsPageState extends State<TicketsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Align(
             alignment: Alignment.center, child: Text('Tickets - Historial')),
         backgroundColor: HexColor("#000080"),
@@ -62,13 +65,61 @@ class _TicketsPageState extends State<TicketsPage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: HexColor("#4169E1"),
+            ),
+            label: "Inicio",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.card_membership_outlined,
+              color: HexColor("#4169E1"),
+            ),
+            label: "Tickets",
+          ),
+        ],
+        onTap: _pageSelect,
+        currentIndex: _selected_index,
+      ),
     );
+  }
+
+  void _pageSelect(int index) {
+    setState(() {
+      _selected_index = index;
+      print(_selected_index);
+      switch (_selected_index) {
+        case 0:
+          print("0");
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+          break;
+        case 1:
+          print("1");
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const TicketsPage()),
+          );
+          break;
+
+        default:
+      }
+    });
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _selected_index = 1;
     ticketHistoryList = getTicketsListByIdClient();
   }
 

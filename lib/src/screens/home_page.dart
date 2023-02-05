@@ -7,6 +7,7 @@ import 'package:mobil_app_bus/src/models/bus_frecuencies.dart';
 import 'package:mobil_app_bus/src/models/user_login.dart';
 import 'package:mobil_app_bus/src/screens/login_page.dart';
 import 'package:mobil_app_bus/src/screens/ticket_information_page.dart';
+import 'package:mobil_app_bus/src/screens/tickets_page.dart';
 import 'package:mobil_app_bus/src/services/frequencies_services.dart';
 import 'package:mobil_app_bus/src/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final formKey = GlobalKey<FormState>();
-
+  int _selected_index = 0;
   UserLogin? user;
   String? name;
   String? emailUser;
@@ -215,7 +216,53 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: HexColor("#4169E1"),
+            ),
+            label: "Inicio",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.card_membership_outlined,
+              color: HexColor("#4169E1"),
+            ),
+            label: "Tickets",
+          ),
+        ],
+        onTap: _pageSelect,
+        currentIndex: _selected_index,
+      ),
     );
+  }
+
+  void _pageSelect(int index) {
+    setState(() {
+      _selected_index = index;
+      switch (_selected_index) {
+        case 0:
+          print("0");
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+          break;
+        case 1:
+          print("1");
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const TicketsPage()),
+          );
+          break;
+
+        default:
+      }
+    });
   }
 
   @override
@@ -224,6 +271,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getUserByEmail();
     checkInternet();
+    setState(() {
+      _selected_index = 0;
+    });
 
     originController = TextEditingController();
     destinyController = TextEditingController();

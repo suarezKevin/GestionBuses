@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:mobil_app_bus/src/screens/home_page.dart';
 import 'package:mobil_app_bus/src/screens/login_page.dart';
-import 'package:mobil_app_bus/src/screens/main_navigator_page.dart';
 import 'package:mobil_app_bus/src/screens/register_user.dart';
 import 'package:mobil_app_bus/src/screens/seat_selection_page.dart';
 import 'package:mobil_app_bus/src/screens/ticket_information_page.dart';
 import 'package:mobil_app_bus/src/screens/tickets_page.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key, this.existEmail});
   final String? existEmail;
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Material App',
+      title: 'Bus-Link',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           scaffoldBackgroundColor: const Color.fromRGBO(229, 228, 226, 1)),
@@ -23,15 +27,14 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: {
         "/": (context) {
-          if (existEmail!.isEmpty) {
+          if (widget.existEmail!.isEmpty) {
             return const LoginPage();
           } else {
-            return const MainNavigator();
+            return const HomePage();
           }
         },
         "/register": (context) => const RegisterPage(),
         "/home_page": (context) => const HomePage(),
-        "/main_navigator_page": (context) => const MainNavigator(),
         "/ticket_information_page": (context) => TicketInformationPage(),
         "/seat_selection_page": (context) => SeatSelectionPage(),
         "/tickets_page": (context) => TicketsPage(),
