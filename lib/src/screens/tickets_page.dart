@@ -1,7 +1,14 @@
+import 'dart:convert';
+
+import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+
 import 'package:mobil_app_bus/src/models/ticket_history.dart';
 import 'package:mobil_app_bus/src/screens/home_page.dart';
+import 'package:mobil_app_bus/src/screens/receipt_send_page.dart';
 import 'package:mobil_app_bus/src/services/tickes_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +23,7 @@ class _TicketsPageState extends State<TicketsPage> {
   int _selected_index = 0;
   Future<List<TicketHistory>>? ticketHistoryList;
   String? asSeatStringList;
+  Uint8List? imageBytes;
 
   @override
   Widget build(BuildContext context) {
@@ -133,10 +141,16 @@ class _TicketsPageState extends State<TicketsPage> {
   List<Widget> showTicketHistoryList(List<TicketHistory> data) {
     List<Widget> tickets = [];
     List<int> seatList = [];
+
     for (var element in data) {
       for (var seat in element.seatings!) {
         seatList.add(seat.number!);
         asSeatStringList = seatList.join(", ");
+      }
+      if (element.receipt == null) {
+        imageBytes = null;
+      } else {
+        imageBytes = const Base64Decoder().convert(element.receipt.toString());
       }
       tickets.add(
         Card(
@@ -144,27 +158,11 @@ class _TicketsPageState extends State<TicketsPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
-          elevation: 15,
+          elevation: 25,
           child: Row(
             children: [
-              // Padding(
-              //   padding: const EdgeInsets.only(
-              //       left: 0, top: 0, right: 15, bottom: 0),
-              //   child: ClipRRect(
-              //     borderRadius: const BorderRadius.only(
-              //       bottomLeft: Radius.circular(5),
-              //     ),
-              //     // ignore: unnecessary_null_comparison
-              //     child: imageBytes != null
-              //         ? Image.memory(imageBytes,
-              //             width: 120, height: 120, fit: BoxFit.fill)
-              //         : Image.asset("assets/images/imglogin.jpeg",
-              //             width: 120, height: 120, fit: BoxFit.fill),
-              //     //color: Colors.red,
-              //   ),
-              // ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, bottom: 20, top: 20),
+                padding: const EdgeInsets.only(left: 15, bottom: 20, top: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -224,6 +222,60 @@ class _TicketsPageState extends State<TicketsPage> {
                   ],
                 ),
               ),
+              Column(
+                children: [
+                  Container(
+                    width: 110,
+                    height: 40,
+                    child: Align(
+                      alignment: const Alignment(1, -1),
+                      child: IconButton(
+                        tooltip: "Subir Comprobante",
+                        onPressed: !element.check!
+                            ? () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ReceiptSendPage(
+                                            ticket_id: element.id,
+                                          )),
+                                );
+                              }
+                            : null,
+                        icon: const Icon(
+                          Icons.upload_file_rounded,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: Align(
+                      alignment: Alignment(1, -1),
+                      child: Container(
+                        margin: EdgeInsets.only(right: 0),
+                        width: 90,
+                        height: 90,
+                        child: _getReceiptByTicket(element.receipt),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: Align(
+                      alignment: Alignment(1, -1),
+                      child: Container(
+                        margin: EdgeInsets.only(right: 0),
+                        width: 90,
+                        height: 90,
+                        child: _getReceiptByTicket(element.qr),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -231,5 +283,16 @@ class _TicketsPageState extends State<TicketsPage> {
       seatList.clear();
     }
     return tickets;
+  }
+
+  Widget _getReceiptByTicket(receiptImage) {
+    if (receiptImage == null) {
+      return Image.asset("assets/images/default.png",
+          height: 100, width: 100, fit: BoxFit.fill);
+    } else {
+      imageBytes = const Base64Decoder().convert(receiptImage);
+      return Image.memory(imageBytes!,
+          width: 100, height: 100, fit: BoxFit.fill);
+    }
   }
 }

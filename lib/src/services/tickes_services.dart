@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:mobil_app_bus/src/models/seating.dart';
@@ -63,4 +64,6 @@ class TicketsServices {
       return e.toString();
     }
   }
+
+  Future sendReceipt(String ticket_id, File receipt) async {}
 }

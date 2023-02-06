@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobil_app_bus/src/screens/home_page.dart';
 import 'package:mobil_app_bus/src/screens/login_page.dart';
+import 'package:mobil_app_bus/src/screens/receipt_send_page.dart';
 import 'package:mobil_app_bus/src/screens/register_user.dart';
 import 'package:mobil_app_bus/src/screens/seat_selection_page.dart';
 import 'package:mobil_app_bus/src/screens/ticket_information_page.dart';
@@ -38,6 +39,7 @@ class _MyAppState extends State<MyApp> {
         "/ticket_information_page": (context) => TicketInformationPage(),
         "/seat_selection_page": (context) => SeatSelectionPage(),
         "/tickets_page": (context) => TicketsPage(),
+        "/receipt_send_page": (context) => ReceiptSendPage(),
       },
     );
   }

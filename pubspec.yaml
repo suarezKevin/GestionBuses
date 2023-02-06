@@ -37,11 +37,13 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   hexcolor: ^3.0.1
-  image_picker: ^0.8.6
+  image_picker: ^0.8.6+1
   http: ^0.13.5
   shared_preferences: ^2.0.15
   internet_connection_checker: ^1.0.0+1
   connectivity_plus: ^3.0.2
+  flutter_vector_icons: ^2.0.0
+  modal_progress_hud_nsn: ^0.3.0
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +70,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/imglogin.jpeg
+    - assets/images/default.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
